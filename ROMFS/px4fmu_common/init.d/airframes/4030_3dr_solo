@@ -50,7 +50,6 @@ then
 	param set CBRK_SUPPLY_CHK   894281
 
 	# RC configuration
-	param set RC_MAP_MODE_SW    5
 	param set RC_MAP_PITCH      2
 	param set RC_MAP_ROLL       1
 	param set RC_MAP_THROTTLE   3

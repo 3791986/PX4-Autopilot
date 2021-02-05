@@ -67,7 +67,6 @@
 #include <drivers/device/device.h>
 #include <drivers/drv_pwm_output.h>
 #include <drivers/drv_hrt.h>
-#include <drivers/drv_rc_input.h>
 #include <drivers/drv_mixer.h>
 #include <drivers/drv_tone_alarm.h>
 

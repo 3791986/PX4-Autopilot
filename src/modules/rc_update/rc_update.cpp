@@ -48,19 +48,13 @@ namespace RCUpdate
 static bool operator ==(const manual_control_switches_s &a, const manual_control_switches_s &b)
 {
 	return (a.mode_slot == b.mode_slot &&
-		a.mode_switch == b.mode_switch &&
 		a.return_switch == b.return_switch &&
-		a.rattitude_switch == b.rattitude_switch &&
-		a.posctl_switch == b.posctl_switch &&
 		a.loiter_switch == b.loiter_switch &&
-		a.acro_switch == b.acro_switch &&
 		a.offboard_switch == b.offboard_switch &&
 		a.kill_switch == b.kill_switch &&
 		a.arm_switch == b.arm_switch &&
 		a.transition_switch == b.transition_switch &&
-		a.gear_switch == b.gear_switch &&
-		a.stab_switch == b.stab_switch &&
-		a.man_switch == b.man_switch);
+		a.gear_switch == b.gear_switch);
 }
 
 static bool operator !=(const manual_control_switches_s &a, const manual_control_switches_s &b) { return !(a == b); }
@@ -166,19 +160,13 @@ void RCUpdate::update_rc_functions()
 	_rc.function[rc_channels_s::FUNCTION_PITCH] = _param_rc_map_pitch.get() - 1;
 	_rc.function[rc_channels_s::FUNCTION_YAW] = _param_rc_map_yaw.get() - 1;
 
-	_rc.function[rc_channels_s::FUNCTION_MODE] = _param_rc_map_mode_sw.get() - 1;
 	_rc.function[rc_channels_s::FUNCTION_RETURN] = _param_rc_map_return_sw.get() - 1;
-	_rc.function[rc_channels_s::FUNCTION_RATTITUDE] = _param_rc_map_ratt_sw.get() - 1;
-	_rc.function[rc_channels_s::FUNCTION_POSCTL] = _param_rc_map_posctl_sw.get() - 1;
 	_rc.function[rc_channels_s::FUNCTION_LOITER] = _param_rc_map_loiter_sw.get() - 1;
-	_rc.function[rc_channels_s::FUNCTION_ACRO] = _param_rc_map_acro_sw.get() - 1;
 	_rc.function[rc_channels_s::FUNCTION_OFFBOARD] = _param_rc_map_offb_sw.get() - 1;
 	_rc.function[rc_channels_s::FUNCTION_KILLSWITCH] = _param_rc_map_kill_sw.get() - 1;
 	_rc.function[rc_channels_s::FUNCTION_ARMSWITCH] = _param_rc_map_arm_sw.get() - 1;
 	_rc.function[rc_channels_s::FUNCTION_TRANSITION] = _param_rc_map_trans_sw.get() - 1;
 	_rc.function[rc_channels_s::FUNCTION_GEAR] = _param_rc_map_gear_sw.get() - 1;
-	_rc.function[rc_channels_s::FUNCTION_STAB] = _param_rc_map_stab_sw.get() - 1;
-	_rc.function[rc_channels_s::FUNCTION_MAN] = _param_rc_map_man_sw.get() - 1;
 
 	_rc.function[rc_channels_s::FUNCTION_FLAPS] = _param_rc_map_flaps.get() - 1;
 
@@ -509,7 +497,7 @@ void RCUpdate::UpdateManualSwitches(const hrt_abstime &timestamp_sample)
 	manual_control_switches_s switches{};
 	switches.timestamp_sample = timestamp_sample;
 
-	// check mode slot (RC_MAP_FLTMODE) or legacy mode switch (RC_MAP_MODE_SW), but not both
+	// check mode slot (RC_MAP_FLTMODE)
 	if (_param_rc_map_fltmode.get() > 0) {
 		// number of valid slots
 		static constexpr int num_slots = manual_control_switches_s::MODE_SLOT_NUM;
@@ -533,17 +521,6 @@ void RCUpdate::UpdateManualSwitches(const hrt_abstime &timestamp_sample)
 		if (switches.mode_slot > num_slots) {
 			switches.mode_slot = num_slots;
 		}
-
-	} else if (_param_rc_map_mode_sw.get() > 0) {
-		switches.mode_switch = get_rc_sw3pos_position(rc_channels_s::FUNCTION_MODE,
-				       _param_rc_auto_th.get(), _param_rc_assist_th.get());
-
-		// only used with legacy mode switch
-		switches.man_switch       = get_rc_sw2pos_position(rc_channels_s::FUNCTION_MAN,       _param_rc_man_th.get());
-		switches.acro_switch      = get_rc_sw2pos_position(rc_channels_s::FUNCTION_ACRO,      _param_rc_acro_th.get());
-		switches.rattitude_switch = get_rc_sw2pos_position(rc_channels_s::FUNCTION_RATTITUDE, _param_rc_ratt_th.get());
-		switches.stab_switch      = get_rc_sw2pos_position(rc_channels_s::FUNCTION_STAB,      _param_rc_stab_th.get());
-		switches.posctl_switch    = get_rc_sw2pos_position(rc_channels_s::FUNCTION_POSCTL,    _param_rc_posctl_th.get());
 	}
 
 	switches.return_switch     = get_rc_sw2pos_position(rc_channels_s::FUNCTION_RETURN,     _param_rc_return_th.get());
